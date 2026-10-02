@@ -8,7 +8,9 @@ namespace Practica4.Services.Interfaces
         List<ProductForReadDto> GetAllProducts();
         ProductForReadDto? GetProductById(int id);
         ProductForReadDto CreateProduct(ProductForCreateDto dto);
+        ProductStatsDto GetStats();
         void UpdateProduct(int id, ProductForUpdateDto dto);
         void DeleteProduct(int id);
+        List<ProductForReadDto> SearchProductsByName(string name);
     }
 }

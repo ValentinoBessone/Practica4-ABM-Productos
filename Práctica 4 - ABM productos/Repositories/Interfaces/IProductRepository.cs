@@ -9,6 +9,7 @@ namespace Practica4.Repositories.Interfaces
         void AddProduct(Product product);
         void UpdateProduct(Product product);
         void DeleteProduct(Product product);
+        List<Product> SearchProductsByName(string name);
 
     }
 }

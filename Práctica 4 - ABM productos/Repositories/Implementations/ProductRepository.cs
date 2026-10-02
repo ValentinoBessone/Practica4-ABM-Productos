@@ -44,5 +44,17 @@ namespace Practica4.Repositories.Implementations
         {
             _products.Remove(product);
         }
-    }
-}
+    
+    
+    public List<Product> SearchProductsByName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return new List<Product>();
+            }
+
+            return _products
+                .Where(p => p.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+    } }

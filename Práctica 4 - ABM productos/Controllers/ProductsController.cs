@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Practica4.Models.DTOs.Requests;
 using Practica4.Services.Implementations;
+using Practica4.Services.Interfaces;
 
 namespace Practica4.Controllers
 {
@@ -8,7 +9,12 @@ namespace Practica4.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private ProductService _service = new ProductService();
+        private readonly IProductService _service;
+
+        public ProductsController(IProductService service)
+        {
+            _service = service;
+        }
 
         [HttpGet]
         public IActionResult GetAll()
@@ -31,8 +37,15 @@ namespace Practica4.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] ProductForCreateDto dto)
         {
-            var createdProduct = _service.CreateProduct(dto);
-            return CreatedAtAction(nameof(GetById), new { id = createdProduct.Id }, createdProduct);
+            try
+            {
+                var createdProduct = _service.CreateProduct(dto);
+                return CreatedAtAction(nameof(GetById), new { id = createdProduct.Id }, createdProduct);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
         }
 
         [HttpPut("{id}")]
@@ -60,5 +73,20 @@ namespace Practica4.Controllers
             _service.DeleteProduct(id);
             return NoContent();
         }
+
+        [HttpGet("search")]
+        public IActionResult Search([FromQuery] string name)
+        {
+            var products = _service.SearchProductsByName(name ?? string.Empty);
+            return Ok(products);
+        }
+
+        [HttpGet("stats")]
+        public IActionResult GetStats()
+        {
+            var stats = _service.GetStats();
+            return Ok(stats);
+        }
     }
+
 }
